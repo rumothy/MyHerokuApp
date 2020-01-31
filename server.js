@@ -26,6 +26,12 @@ app.post("/api/items", function(req, res){
     });
 });
 
+app.delete("/api/items/:id", function(req, res){
+    dbItems = dbItems.filter( x=> x.id !== parseInt(req.params.id));
+    res.render('itemsView', {
+        items: dbItems
+    });
+});
 function sendItemsHtml(res) {
     
     fs.readFile(path.join(__dirname, "public/index.html"), 'utf-8', function(err, data){

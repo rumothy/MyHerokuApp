@@ -11,6 +11,9 @@
     {{{body}}}
     <input id="tbItemName" type="text" placeholder="item name">
     <button id="btnAdd">Add?</button>
+    <br>
+    <input id="tbItemId" type="text" placeholder="item id">
+    <button id="btnDelete">Delete?</button>
     <script>
         $("#btnAdd").click(function(event){
             event.preventDefault();
@@ -20,6 +23,19 @@
                 type: "POST",
                 data: addedItem
             }).then( () => {
+                $("#tbItemName").val('');
+                location.reload();
+            });
+        });
+
+        $("#btnDelete").click(function(){
+            event.preventDefault();
+            let itemId = $("#tbItemId").val().trim();
+
+            $.ajax(`/api/items/${itemId}`, {
+                type: 'DELETE'
+            }).then( function(){
+                $("#tbItemId").val('');
                 $("#tbItemName").val('');
                 location.reload();
             });
