@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery.js"></script>
+</head>
+<body>
+    <h1>Items</h1>
+    <ul>{{{_items}}}</ul>
+    <input id="tbItemName" type="text" placeholder="item name">
+    <button id="btnAdd">Add?</button>
+    <script>
+        $("#btnAdd").click(function(event){
+            event.preventDefault();
+            let addedItem = { itemName: $("#tbItemName").val().trim() };
+
+            $.ajax("/api/items", {
+                type: "POST",
+                data: addedItem
+            }).then( () => {
+                $("#tbItemName").val('');
+                location.reload();
+            });
+        });
+    </script>
+</body>
+</html>
