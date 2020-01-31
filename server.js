@@ -1,33 +1,43 @@
 const express = require("express");
 const app = express();
+const exphbs = require("express-handlebars")
 const fs = require("fs");
+const PORT = process.env.PORT || 3000;
+const path = require('path');
 
+app.engine('handlebars', exphbs({defaultLayout: "mainLayout"}));
+app.set("view engine", "handlebars");
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-
-let items = [ { id: 1, name: "shiny item"} ];
+// app.use(express.static("public"));
+let dbItems = [ { id: 1, name: "shiny item"} ];
 
 app.get("/", function(req, res){
-    sendItemsHtml(res);
+    res.render('itemsView', {
+        items: dbItems
+    });
 });
 
 app.post("/api/items", function(req, res){
-    let item = { id: items.length + 1, name: req.body.itemName };
-    items.push(item);
-    sendItemsHtml(res);
+    let item = { id: dbItems.length + 1, name: req.body.itemName };
+    dbItems.push(item);
+    res.render('itemsView', {
+        items: dbItems
+    });
 });
 
 function sendItemsHtml(res) {
-    fs.readFile(`${__dirname}/index.html`, 'utf-8', function(err, data){
+    
+    fs.readFile(path.join(__dirname, "public/index.html"), 'utf-8', function(err, data){
         if (err) throw err;
         res.end(data.replace("{{{_items}}}", createItemsHtml()));
     });
 }
 
 function createItemsHtml(){
-    let itemsHtmlArry = items.map(x => `<li>${x.id} ${x.name}</li>`);
+    let itemsHtmlArry = dbItems.map(x => `<li>${x.id} ${x.name}</li>`);
     return itemsHtmlArry.join('');
 }
 
-app.listen(8080, () => console.log(`Server listening http://localhost:8080`));
+app.listen(PORT, () => console.log(`Server listening http://localhost:${PORT}`));
 
